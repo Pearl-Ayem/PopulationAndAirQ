@@ -145,4 +145,26 @@ Populationpercountry19502015.VarName15 = data(:,14);
 clearvars data raw stringVectors;
 
 %% Refine pop data for countries
+
+% refinedPop is the Population data matrix with the rows being population
+% between 1970 to 2008 and columns being 10 countris in this order:
+%Angola, Bulgaria, Croatia, Georgia, Hungary, Lithuania, Malawi, Niger,South Sudan,  Uganda 
+
+d2 = table2array(Populationpercountry19502015);
+refinedPop = [];
+refinedPop(:,1)=[1950:5:2015];
+i =2;
+for o = 1:length(countries)
+    for n = 1:length(d2)
+        if d2(n,1) == " "+countries(o)
+            tran = transpose(d2(n,2:end));
+            for x = 1:length(tran)
+                refinedPop(x,i) = tran(x);
+            end
+            i = i+1;
+        end
+    end
+end
+
+clearvars n o tran x i;
         
