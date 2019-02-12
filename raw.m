@@ -82,16 +82,15 @@ clearvars data raw stringVectors R;
 %Angola, Bulgaria, Croatia, Georgia, Hungary, Lithuania, Malawi, Niger,South Sudan,  Uganda 
 
 countries = ["Angola", "Bulgaria", "Croatia", "Georgia", "Hungary", "Lithuania", "Malawi",...
-    "Niger","South Sudan",  "Uganda"];
+    "Niger","Sudan",  "Uganda"];
 d2 = table2array(PM10Data);
 refinedPM10 = [];
-refinedPM10(:,1)=[1969:2008];
+refinedPM10(:,1)=[1970:2008];
 i =2;
 for o = 1:length(countries)
     for n = 1:length(d2)
-        if d2(n,1) == countries(o)
-            %fillRow(d2,mtrx,n,i);
-            tran = transpose(d2(n,:));
+        if contains(countries(o),d2(n,1))
+            tran = transpose(d2(n,2:end));
             for x = 1:length(tran)
                 refinedPM10(x,i) = tran(x);
             end
@@ -156,7 +155,7 @@ refinedPop(:,1)=[1950:5:2015];
 i =2;
 for o = 1:length(countries)
     for n = 1:length(d2)
-        if d2(n,1) == " "+countries(o)
+        if d2(n,1) == " " + countries(o)
             tran = transpose(d2(n,2:end));
             for x = 1:length(tran)
                 refinedPop(x,i) = tran(x);
@@ -165,6 +164,30 @@ for o = 1:length(countries)
         end
     end
 end
-
 clearvars n o tran x i;
         
+
+%% Create graphs - Population Timeseries
+
+
+for i = 2:11
+    figure 
+    plot(refinedPop(:,1),refinedPop(:,i), 'k-','Linewidth', 2);
+    title(['Population timeseries of ' countries(i-1) 'from 1950 to 2015']);
+    xlabel('Years');
+    ylabel('Total Population');
+    grid on
+    grid minor
+end
+      
+%% Create Graphs - PM10 Timeseries
+
+for i = 2:11
+    figure 
+    plot(refinedPM10(:,1),refinedPM10(:,i), 'k-','Linewidth', 2);
+    title(['PM10 concentration timeseries of ' countries(i-1) 'from 1970 to 2008']);
+    xlabel('Years');
+    ylabel('PM10 concentration(units)');
+    grid on
+    grid minor
+end
