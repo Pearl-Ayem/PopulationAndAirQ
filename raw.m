@@ -98,7 +98,7 @@ for o = 1:length(countries)
         end
     end
 end
-
+refinedPM10(:,2:end) = refinedPM10(:,2:end)*1000000000;
 clearvars n o tran x i;
 %% Import Population Data
 % Script for importing data from the following spreadsheet:
@@ -165,13 +165,15 @@ for o = 1:length(countries)
     end
 end
 clearvars n o tran x i;
+refinedPop(:,2:end) = refinedPop(:,2:end)*1000;
+
         
 
 %% Create graphs - Population Timeseries
 
 
 for i = 2:11
-    figure 
+    %figure 
     plot(refinedPop(:,1),refinedPop(:,i), 'k-','Linewidth', 2);
     title(['Population timeseries of ' countries(i-1) 'from 1950 to 2015']);
     xlabel('Years');
@@ -183,11 +185,31 @@ end
 %% Create Graphs - PM10 Timeseries
 
 for i = 2:11
-    figure 
+    %figure 
     plot(refinedPM10(:,1),refinedPM10(:,i), 'k-','Linewidth', 2);
-    title(['PM10 concentration timeseries of ' countries(i-1) 'from 1970 to 2008']);
+    title(['PM10 concentration timeseries of ' countries(i-1) 'from 1970 to 2015']);
     xlabel('Years');
-    ylabel('PM10 concentration(units)');
+    ylabel('PM10 concentration (grams)');
     grid on
     grid minor
 end
+
+%% Per capita data
+
+% perCapitaPM is the PM count per capita in g per person
+perCapitaPM =[];
+a=1;
+for n = 1:length(refinedPM10)
+    for x=1:length(refinedPop)
+        if refinedPM10(n,1) == refinedPop(x,1)
+            for i = 2:11
+                percapita = refinedPM10(n,i)/refinedPop(x,i);
+                perCapitaPM(a,i) = percapita;
+                perCapitaPM(a,1) = refinedPop(x,1);
+            end
+            a=a+1;
+        end
+    end
+end
+
+clearvars i n x a percapita;
