@@ -233,9 +233,13 @@ end
 %legend(countries);
 
 %% PM10 per capita vs population
-m1 = refinedPop(:,1) <= 2005;
-m2 = refinedPop(:,1) >= 1970;
-overlappingPop = refinedPop(m1 & m2);
+ i=1;
+for x= 1:length(refinedPop)
+    if refinedPop(x,1) <= 2005 && refinedPop(x,1) >= 1970
+        overlappingPop(i,:) = refinedPop(x,:);
+        i=i+1;
+    end
+end
 
 %trendTable is a matrix of the slope of the rate PM10 per capita vs
 %population trendline (row 1), and y-intercept (row 2), R^2 value (row 3)
@@ -243,16 +247,17 @@ trendTable = [];
 i=1;
 for n = 2:11
     %figure
+    x_val=overlappingPop(:,n)
     y_val=perCapitaPM(:,n);
-    plot(overlappingPop,y_val,'k.','MarkerSize', 14);
+    plot(x_val,y_val,'k.','MarkerSize', 14);
     title({'PM10 per capita VS Total Population' countries(i)});
     ylabel({'PM10 per capita' '(grams per person)'});
     xlabel('Population');  
-    [coef,bint,r,rint,stats] = regress(y_val,[ones(size(y_val)),overlappingPop]);
-    fit = coef(1)+coef(2).*overlappingPop;
+    [coef,bint,r,rint,stats] = regress(y_val,[ones(size(y_val)),x_val]);
+    fit = coef(1)+coef(2).*x_val;
     hold on
-    plot(overlappingPop,fit,'r--');
-    text(1971,(max(y_val) + min(y_val))/2,['Slope = ',num2str(round(coef(2),3)), ';  R^2=',num2str(round(stats(1),3))])
+    plot(x_val,fit,'r--');
+    text(min(x_val),(max(y_val) + min(y_val))/2,['Slope = ',num2str(round(coef(2),3)), ';  R^2=',num2str(round(stats(1),3))])
     trendTable(1,i)=coef(2);
     trendTable(2,i) = coef(1);
     trendTable(3,i) = stats(1);
@@ -260,6 +265,6 @@ for n = 2:11
     i=i+1;
 end
 
+%% PM10 percapita vs population trends mapped by country
 
-            
-
+           
