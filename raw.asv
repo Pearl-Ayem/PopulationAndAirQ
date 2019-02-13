@@ -196,20 +196,58 @@ end
 
 %% Per capita data
 
-% perCapitaPM is the PM count per capita in 
-percapitaPM =[];
+% perCapitaPM is the PM count per capita in g per person
+perCapitaPM =[];
 a=1;
 for n = 1:length(refinedPM10)
     for x=1:length(refinedPop)
         if refinedPM10(n,1) == refinedPop(x,1)
             for i = 2:11
                 percapita = refinedPM10(n,i)/refinedPop(x,i);
-                percapitaPM(a,i) = percapita;
-                percapitaPM(a,1) = refinedPop(x,1);
+                perCapitaPM(a,i) = percapita;
+                perCapitaPM(a,1) = refinedPop(x,1);
             end
             a=a+1;
         end
     end
 end
 
+clearvars i n x a percapita;
+
+%% change in PM10 per capita vs time for all the 10 countries
+    
+i =1;
+for n= 2:11
+    %figure
+    %subplot(5,2,i)
+    plot(perCapitaPM(:,1),perCapitaPM(:,n),'r-','Linewidth', 2);
+    title({'PM10 per capita timeseries' countries(i)});
+    ylabel({'PM10 per capita' '(grams per person)'});
+    xlabel('Years');  
+    i=i+1;
+end
+
+%title({'PM10 per capita timeseries for all countreis'});
+%ylabel({'PM10 per capita (grams per person)'});
+%xlabel('Years');
+%legend(countries);
+
+%% PM10 per capita vs population
+m1 = refinedPop(:,1) <= 2005;
+m2 = refinedPop(:,1) >= 1970;
+overlappingPop = refinedPop(m1 & m2);
+
+i=1;
+for n = 2:11
+    figure
+    plot(overlappingPop,perCapitaPM(:,n),'k^','MarkerSize', 4);
+    title({'PM10 per capita VS Total Population' countries(i)});
+    ylabel({'PM10 per capita' '(grams per person)'});
+    xlabel('Population');  
+    i=i+1;
+end
+
+%trendTable is a matrix of the slope of the rate PM10 per capita vs
+%population trendline (row 1), and y-intercept (row 2), R^2 value (row 3)
             
+

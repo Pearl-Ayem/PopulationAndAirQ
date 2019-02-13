@@ -213,3 +213,46 @@ for n = 1:length(refinedPM10)
 end
 
 clearvars i n x a percapita;
+
+%% change in PM10 per capita vs time for all the 10 countries
+    
+i =1;
+for n= 2:11
+    %figure
+    %subplot(5,2,i)
+    plot(perCapitaPM(:,1),perCapitaPM(:,n),'r-','Linewidth', 2);
+    title({'PM10 per capita timeseries' countries(i)});
+    ylabel({'PM10 per capita' '(grams per person)'});
+    xlabel('Years');  
+    i=i+1;
+end
+
+%title({'PM10 per capita timeseries for all countreis'});
+%ylabel({'PM10 per capita (grams per person)'});
+%xlabel('Years');
+%legend(countries);
+
+%% PM10 per capita vs population
+m1 = refinedPop(:,1) <= 2005;
+m2 = refinedPop(:,1) >= 1970;
+overlappingPop = refinedPop(m1 & m2);
+trendTable = [];
+i=1;
+for n = 2:11
+    figure
+    plot(overlappingPop,perCapitaPM(:,n),'k^','MarkerSize', 4);
+    title({'PM10 per capita VS Total Population' countries(i)});
+    ylabel({'PM10 per capita' '(grams per person)'});
+    xlabel('Population');  
+    [coef,bint,r,rint,stats] = regress(perCapitaPM(:,n),[ones(size(perCapitaPM(:,n))),overlappingPop]);
+    text(1951,1.2,['Slope = ',num2str(round(coef(2),3)),...
+        '; R^2=',num2str(round(stats(1),3))...
+        '; conf = [' num2str(round(bint(2,1),3)) ','...
+            num2str(round(bint(2,2),3)) ']'])
+        i=i+1;
+end
+
+%trendTable is a matrix of the slope of the rate PM10 per capita vs
+%population trendline (row 1), and y-intercept (row 2), R^2 value (row 3)
+            
+
