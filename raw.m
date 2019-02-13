@@ -242,7 +242,7 @@ overlappingPop = refinedPop(m1 & m2);
 trendTable = [];
 i=1;
 for n = 2:11
-    figure
+    %figure
     y_val=perCapitaPM(:,n);
     plot(overlappingPop,y_val,'k.','MarkerSize', 14);
     title({'PM10 per capita VS Total Population' countries(i)});
